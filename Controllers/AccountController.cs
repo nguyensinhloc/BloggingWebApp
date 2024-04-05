@@ -8,9 +8,11 @@ namespace BloggingWebApp.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> userManager;
-        public AccountController(UserManager<AppUser> userManager)
+        private readonly SignInManager<AppUser> signInManager;
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
         public IActionResult Register()
         {
@@ -41,6 +43,40 @@ namespace BloggingWebApp.Controllers
                 }
             }
             return View(user);
+        }
+        public IActionResult Login(string returnUrl)
+        {
+            Login login = new Login
+            {
+                ReturnUrl = returnUrl
+            };
+            return View(login);
+        }
+        public async Task<IActionResult> Login(Login login)
+        {
+            if(ModelState.IsValid)
+            {
+                AppUser appUser = await userManager.FindByNameAsync(login.UserName);
+                if(appUser != null)
+                {
+                    Microsoft.AspNetCore.Identity.SignInResult result = await signInManager.PasswordSignInAsync(
+                        appUser, login.Password, false, false
+                        );
+                    if(result.Succeeded)
+                    {
+                        return RedirectToAction(login.ReturnUrl ?? "/");
+                    }
+                }
+                {
+
+                }
+            }
+            return View(login);
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return Redirect("/");
         }
     }
 }

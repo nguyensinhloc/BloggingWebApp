@@ -17,8 +17,9 @@ namespace BloggingWebApp.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            // Assuming you have a class that should be keyless
             modelBuilder.Entity<User>().HasNoKey();
+            modelBuilder.Entity<Login>().HasNoKey();
         }
+        public DbSet<BloggingWebApp.Models.Login> Login { get; set; }
     }
 }
