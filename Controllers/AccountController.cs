@@ -44,6 +44,7 @@ namespace BloggingWebApp.Controllers
             }
             return View(user);
         }
+        [HttpGet]
         public IActionResult Login(string returnUrl)
         {
             Login login = new Login
@@ -52,6 +53,7 @@ namespace BloggingWebApp.Controllers
             };
             return View(login);
         }
+        [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
             if(ModelState.IsValid)
@@ -66,9 +68,6 @@ namespace BloggingWebApp.Controllers
                     {
                         return RedirectToAction(login.ReturnUrl ?? "/");
                     }
-                }
-                {
-
                 }
             }
             return View(login);
